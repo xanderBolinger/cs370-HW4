@@ -18,7 +18,7 @@ class TestCases(unittest.TestCase):
             print("Process ID: {}, Process Arival Time: {}, Process Burst Time: {}, Process Priority: {}"
                 .format(process.process_id, process.arival_time, process.burst_time, process.priority))
                 
-        self.assertEqual(processes[0].process_id, 3)
+        self.assertEqual(processes[0].process_id, 33)
         self.assertEqual(processes[0].arival_time, 0)
         self.assertEqual(processes[0].burst_time, 3)
         self.assertEqual(processes[0].priority, 2)
