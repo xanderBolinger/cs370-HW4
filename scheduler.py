@@ -4,6 +4,9 @@ import unittest
 import test
 from process import getProcesses
 
+def print_processes(processes,type):
+    print("----------------- {} -----------------".format(type))
+    print("Process ID | Waiting Time | Turnaround Time".rjust(50))
 
 if __name__ == "__main__":
     # print('Number of arguments:', len(sys.argv), 'arguments.')
@@ -22,9 +25,13 @@ if __name__ == "__main__":
     processes = getProcesses(sys.argv[1])
 
     # Call FCFS
+    print_processes(processes, "FCFS")
 
     # Test print TODO: comment out before submitting
     print("pass finished main".upper())
 
     
-            
+
+
+
+
