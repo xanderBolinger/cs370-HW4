@@ -1,5 +1,4 @@
 import sys
-import csv
 import unittest
 import test
 from process import getProcesses
