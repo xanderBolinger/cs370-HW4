@@ -1,4 +1,3 @@
-from concurrent.futures import process
 import csv
 
 class Process: 
@@ -8,6 +7,7 @@ class Process:
     priority = 0
     waiting_time = 0
     turnaround_time = 0
+    completed = False
 
     def __init__(self,process_id, arival_time, burst_time,priority):
         self.process_id = int(process_id)

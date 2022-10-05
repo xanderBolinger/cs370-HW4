@@ -1,6 +1,6 @@
 import unittest
 from process import Process, getProcesses
-
+from processRunner import ProcessRunner, ProcessorType
 
 class TestCases(unittest.TestCase):
     def test_process(self):
@@ -18,7 +18,7 @@ class TestCases(unittest.TestCase):
             print("Process ID: {}, Process Arival Time: {}, Process Burst Time: {}, Process Priority: {}"
                 .format(process.process_id, process.arival_time, process.burst_time, process.priority))
                 
-        self.assertEqual(processes[0].process_id, 33)
+        self.assertEqual(processes[0].process_id, 3)
         self.assertEqual(processes[0].arival_time, 0)
         self.assertEqual(processes[0].burst_time, 3)
         self.assertEqual(processes[0].priority, 2)
@@ -41,6 +41,36 @@ class TestCases(unittest.TestCase):
         
         print("FINISHED TEST GET PROCESSES: ")
 
+    def test_processor(self):
+        print("TEST PROCESSOR")
+        processes = getProcesses("processinfo.csv")
+        processor = ProcessRunner(processes, ProcessorType.FCFS)
+        self.assertEqual(len(processor.processes), 4)
+        self.assertEqual(processor.type, ProcessorType.FCFS)
+
+        gantChart = []
+        for i in range(3):
+            gantChart.append(processes[0].process_id)
+        
+        for i in range(5):
+            gantChart.append(processes[1].process_id)
+
+        gantChart.append(None)
+
+        for i in range(8):
+            gantChart.append(processes[2].process_id)
+        
+        for i in range(6):
+            gantChart.append(processes[3].process_id)
+        
+        processor.run()
+
+        self.assertEqual(len(processor.gantChart), len(gantChart))
+
+
+
+
+        
 if __name__ == '__main__':
     unittest.main()
     
