@@ -25,7 +25,7 @@ class ProcessRunner:
         # check for ariving processes 
         for process in self.processes:
             if process.arival_time == self.getTu():
-                self.readyQueue.insert(process)
+                self.readyQueue.insert(0, process)
 
         # if there is no executing process, pull first process from ready queue 
         if self.executingProcess == None: 
