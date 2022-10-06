@@ -33,15 +33,18 @@ class ProcessRunner:
             self.executingProcess = queue.popleft()
 
         # execute process 
-        if self.executingProcess == None:
-            self.gantChart.append(None)
-        else:
-            self.gantChart.append(self.executingProcess.process_id)
+        self.execute_process()
 
         # if process finished set it to completed 
         if self.getBursts(self.executingProcess.process_id) == self.executingProcess.burst_time:
             self.executingProcess.comleted = True 
             self.executingProcess = None
+
+    def execute_process(self):
+        if self.executingProcess == None:
+            self.gantChart.append(None)
+        else:
+            self.gantChart.append(self.executingProcess.process_id)
 
     def getBursts(self, process_id):
         count = 0
