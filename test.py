@@ -45,7 +45,7 @@ class TestCases(unittest.TestCase):
         processes: list[Process] = getProcesses("processinfo.csv")
         processor = ProcessRunner(processes, ProcessorType.FCFS)
         self.assertEqual(len(processor.processes), 4)
-        self.assertEqual(processor.type, ProcessorType.FCFS)
+        self.assertEqual(processor.processor_type, ProcessorType.FCFS)
 
         processor.executingProcess = processes[0]
         for x in range(processes[0].burst_time):
@@ -77,30 +77,12 @@ class TestCases(unittest.TestCase):
         print("TEST PROCESSOR")
         processes: list[Process] = getProcesses("processinfo.csv")
         processor = ProcessRunner(processes, ProcessorType.FCFS)
-
-        gantChart = []
-        for i in range(3):
-            gantChart.append(processes[0].process_id)
-        
-        for i in range(5):
-            gantChart.append(processes[1].process_id)
-
-        gantChart.append(None)
-
-        for i in range(8):
-            gantChart.append(processes[2].process_id)
-        
-        for i in range(6):
-            gantChart.append(processes[3].process_id)
         
         processor.run()
 
-        self.assertEqual(len(processor.gantChart), len(gantChart))
+        self.assertEqual(len(processor.gantChart), 23)
 
 
-
-
-        
 if __name__ == '__main__':
     unittest.main()
     
