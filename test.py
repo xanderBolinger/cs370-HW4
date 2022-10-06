@@ -42,10 +42,6 @@ class TestCases(unittest.TestCase):
         print("FINISHED TEST GET PROCESSES: ")
 
     def test_processor_methods(self):
-        pass
-
-    def test_processor_run(self):
-        print("TEST PROCESSOR")
         processes: list[Process] = getProcesses("processinfo.csv")
         processor = ProcessRunner(processes, ProcessorType.FCFS)
         self.assertEqual(len(processor.processes), 4)
@@ -67,6 +63,21 @@ class TestCases(unittest.TestCase):
         for x in range(processes[1].burst_time):
             processor.execute_process()
 
+        processor.complete_process()
+
+        self.assertEqual(processor.executingProcess.completed, True)
+        self.assertEqual(processor.executingProcess.completed, processes[1].completed)
+
+        processes[2].completed = True 
+        processes[3].completed = True 
+
+        self.assertEqual(processor.processesCompleted(), True)
+
+    def test_processor_run(self):
+        print("TEST PROCESSOR")
+        processes: list[Process] = getProcesses("processinfo.csv")
+        processor = ProcessRunner(processes, ProcessorType.FCFS)
+
         gantChart = []
         for i in range(3):
             gantChart.append(processes[0].process_id)
@@ -82,9 +93,9 @@ class TestCases(unittest.TestCase):
         for i in range(6):
             gantChart.append(processes[3].process_id)
         
-        # processor.run()
+        processor.run()
 
-        # self.assertEqual(len(processor.gantChart), len(gantChart))
+        self.assertEqual(len(processor.gantChart), len(gantChart))
 
 
 
