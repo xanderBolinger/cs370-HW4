@@ -17,13 +17,16 @@ class ProcessRunner:
         self.processor_type = type
 
     def run(self):
-        while self.processesCompleted() == False and self.getTu() < 20: 
+
+        self.gantChart = []
+
+        while self.processesCompleted() == False: 
             if self.processor_type == ProcessorType.FCFS:
                 self.fcfs()
 
     def fcfs(self):
 
-        print("Print TU: "+str(self.getTu()))
+        #print("Print TU: "+str(self.getTu())+", "+str(self.gantChart))
 
         # check for ariving processes 
         for process in self.processes:
@@ -32,14 +35,16 @@ class ProcessRunner:
 
         # if there is no executing process, pull first process from ready queue 
         if (self.executingProcess == None or self.executingProcess.completed == True) and len(self.readyQueue) > 0: 
-            queue = deque(self.readyQueue)
-            self.executingProcess = queue.popleft()
+            self.executingProcess = self.readyQueue[0]
+            self.readyQueue.remove(self.executingProcess)
 
         # execute process 
         self.execute_process()
 
         # if process finished set it to completed 
         self.complete_process()
+
+        #print("Ready Queue Size: {}".format(len(self.readyQueue)))
 
     def getBursts(self, process_id):
         count = 0
@@ -53,6 +58,7 @@ class ProcessRunner:
         if self.executingProcess == None:
             self.gantChart.append(None)
         else:
+            #print("Append Process: {}".format(self.executingProcess.process_id))
             self.gantChart.append(self.executingProcess.process_id)
 
     def complete_process(self):

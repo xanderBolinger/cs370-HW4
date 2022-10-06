@@ -76,11 +76,11 @@ class TestCases(unittest.TestCase):
     def test_processor_run(self):
         print("TEST PROCESSOR")
         processes: list[Process] = getProcesses("processinfo.csv")
-        processor = ProcessRunner(processes, ProcessorType.FCFS)
+        processor2 = ProcessRunner(processes, ProcessorType.FCFS)
         
-        processor.run()
+        processor2.run()
 
-        self.assertEqual(len(processor.gantChart), 23)
+        self.assertEqual(len(processor2.gantChart), 23)
 
 
 if __name__ == '__main__':
