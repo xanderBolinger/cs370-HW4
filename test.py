@@ -47,40 +47,58 @@ class TestCases(unittest.TestCase):
         self.assertEqual(len(processor.processes), 4)
         self.assertEqual(processor.processor_type, ProcessorType.FCFS)
 
-        processor.executingProcess = processes[0]
+        processor.executing_process = processes[0]
         for x in range(processes[0].burst_time):
-            processor.gantChart.append(processes[0].process_id)
+            processor.gant_chart.append(processes[0].process_id)
 
         self.assertEqual(processor.getBursts(processes[0].process_id), processes[0].burst_time)
 
         processor.complete_process()
 
-        self.assertEqual(processor.executingProcess.completed, True)
-        self.assertEqual(processor.executingProcess.completed, processes[0].completed)
+        self.assertEqual(processes[0].completed, True)
+        self.assertEqual(processes[0].completed, processes[0].completed)
 
-        processor.executingProcess = processes[1]
+        processor.executing_process = processes[1]
 
         for x in range(processes[1].burst_time):
             processor.execute_process()
 
         processor.complete_process()
 
-        self.assertEqual(processor.executingProcess.completed, True)
-        self.assertEqual(processor.executingProcess.completed, processes[1].completed)
+        self.assertEqual(processes[1].completed, True)
+        self.assertEqual(processes[1].completed, processes[1].completed)
 
         processes[2].completed = True 
         processes[3].completed = True 
 
-        self.assertEqual(processor.processesCompleted(), True)
+        self.assertEqual(processor.processes_completed(), True)
 
     def test_processor_run(self):
         print("TEST PROCESSOR")
         processes: list[Process] = getProcesses("processinfo.csv")
-        processor2 = ProcessRunner(processes, ProcessorType.FCFS)
+        processor = ProcessRunner(processes, ProcessorType.FCFS)
         
-        processor2.run()
+        processor.run()
 
-        self.assertEqual(len(processor2.gantChart), 23)
+        print("PROCESSOR GANT CHART: "+str(processor.gant_chart))
+
+        self.assertEqual(processor.processes[0].completion_time, 8)
+        self.assertEqual(processor.processes[0].turn_around_time, 8)
+        self.assertEqual(processor.processes[0].waiting_time, 5)
+
+        self.assertEqual(processor.processes[1].completion_time, 5)
+        self.assertEqual(processor.processes[1].turn_around_time, 5)
+        self.assertEqual(processor.processes[1].waiting_time, 0)
+        
+        self.assertEqual(processor.processes[2].completion_time, 17)
+        self.assertEqual(processor.processes[2].turn_around_time, 8)
+        self.assertEqual(processor.processes[2].waiting_time, 0)
+
+        self.assertEqual(processor.processes[3].completion_time, 23)
+        self.assertEqual(processor.processes[3].turn_around_time, 13)
+        self.assertEqual(processor.processes[3].waiting_time, 7)
+
+        self.assertEqual(len(processor.gant_chart), 23)
 
 
 if __name__ == '__main__':

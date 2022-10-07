@@ -5,8 +5,10 @@ class Process:
     arival_time = 0
     burst_time = 0
     priority = 0
-    waiting_time = 0
-    turnaround_time = 0
+    completion_time = -1
+    waiting_time = -1
+    turn_around_time = -1
+    response_time = -1
     completed = False
 
     def __init__(self,process_id, arival_time, burst_time,priority):
