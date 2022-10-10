@@ -101,6 +101,36 @@ class TestCases(unittest.TestCase):
         self.assertEqual(len(processor.gant_chart), 23)
 
 
+    def test_rr(self):
+        processes: list[Process] = getProcesses("processinfo.csv")
+        processor = ProcessRunner(processes, ProcessorType.RR, 2)
+        
+        processor.run()
+
+        print("PROCESSOR RR GANT CHART: "+str(processor.gant_chart))
+
+        # pid 3
+        self.assertEqual(processor.processes[0].completion_time, 7)
+        self.assertEqual(processor.processes[0].turn_around_time, 7)
+        self.assertEqual(processor.processes[0].waiting_time, 4)
+
+        # pid 2
+        self.assertEqual(processor.processes[1].completion_time, 8)
+        self.assertEqual(processor.processes[1].turn_around_time, 8)
+        self.assertEqual(processor.processes[1].waiting_time, 3)
+        
+        # pid 1
+        self.assertEqual(processor.processes[2].completion_time, 23)
+        self.assertEqual(processor.processes[2].turn_around_time, 14)
+        self.assertEqual(processor.processes[2].waiting_time, 6)
+
+        # pid 4
+        self.assertEqual(processor.processes[3].completion_time, 21)
+        self.assertEqual(processor.processes[3].turn_around_time, 11)
+        self.assertEqual(processor.processes[3].waiting_time, 5)
+
+        self.assertEqual(len(processor.gant_chart), 23)
+
 if __name__ == '__main__':
     unittest.main()
     
