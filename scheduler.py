@@ -64,9 +64,7 @@ if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=2).run(suite)
 
     # Get process objects 
-    processes = getProcesses(sys.argv[1])
-
-    processRunner = ProcessRunner(processes,ProcessorType.FCFS)
+    processRunner = ProcessRunner(getProcesses(sys.argv[1]), ProcessorType.FCFS)
     processRunner.run()
 
     # Call FCFS
@@ -77,6 +75,21 @@ if __name__ == "__main__":
 
     print()
     print_averages(processRunner)
+    print()
+    
+    # Call RR
+    processRunner = ProcessRunner(processes=getProcesses(sys.argv[1])
+        , type=ProcessorType.RR, time_quantum=int(sys.argv[2]))
+    processRunner.run()
+
+    print_processes(processRunner.processes, "Round Robin")
+    print()
+
+    print_gant_chart(processRunner)
+
+    print()
+    print_averages(processRunner)
+    print()
 
     # Test print TODO: comment out before submitting
     print("pass finished main".upper())

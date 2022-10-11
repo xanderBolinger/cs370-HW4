@@ -1,6 +1,9 @@
+from concurrent.futures import process
 from process import Process
 from enum import Enum
 from typing import List
+import sys
+
 class ProcessorType(Enum):
     FCFS = 1
     RR = 2
@@ -13,7 +16,7 @@ class ProcessRunner:
     processor_type = ProcessorType.FCFS
     time_quantum = 0
 
-    def __init__(self,processes,type, time_quantum=0):
+    def __init__(self,processes, type, time_quantum=0):
         self.processes = processes
         self.processor_type = type
         self.time_quantum = time_quantum
@@ -22,14 +25,11 @@ class ProcessRunner:
 
         self.gant_chart = []
 
-        count = 0
-        while self.processes_completed() == False and count < 50: 
+        while self.processes_completed() == False: 
             if self.processor_type == ProcessorType.FCFS:
                 self.fcfs()
             elif self.processor_type == ProcessorType.RR:
                 self.rr()
-
-            count = count + 1 
 
         for process in self.processes:
             process.turn_around_time = process.completion_time - process.arival_time
@@ -55,18 +55,18 @@ class ProcessRunner:
                 if self.complete_process():
                     process_completed = True
                     break
-                print("Time Unit: {}".format(len(self.gant_chart)))
+                # print("Time Unit: {}".format(len(self.gant_chart)))
 
             if process_completed == False:
                 self.ready_queue.append(process)
                 self.executing_process = None 
 
-            print("return to ready queue: {}".format(process.process_id))
+            # print("return to ready queue: {}".format(process.process_id))
         else: 
             # add idle 
             self.execute_process()
 
-        print("Ready Queue Size: {}".format(len(self.ready_queue)))
+        # print("Ready Queue Size: {}".format(len(self.ready_queue)))
 
 
     def fcfs(self):
@@ -99,12 +99,12 @@ class ProcessRunner:
                     self.ready_queue.insert(0, process)
                 else:
                     self.ready_queue.append(process)
-                print("Ariving Process: {}".format(process.process_id))
+                # print("Ariving Process: {}".format(process.process_id))
 
     def set_process(self):
         if (self.executing_process == None or self.executing_process.completed == True) and len(self.ready_queue) > 0: 
             self.executing_process = self.ready_queue[0]
-            print("Set Process: {}".format(self.executing_process.process_id))
+            # print("Set Process: {}".format(self.executing_process.process_id))
             self.ready_queue.remove(self.executing_process)
             self.executing_process.response_time = len(self.gant_chart) - self.executing_process.arival_time
 
@@ -119,9 +119,9 @@ class ProcessRunner:
     def execute_process(self):
         if self.executing_process == None:
             self.gant_chart.append("IDLE")
-            print("Execute Process IDLE")
+            # print("Execute Process IDLE")
         else:
-            print("Execute Process: {}".format(self.executing_process.process_id))
+            # print("Execute Process: {}".format(self.executing_process.process_id))
             self.gant_chart.append(self.executing_process.process_id)
 
     def complete_process(self):
@@ -155,9 +155,23 @@ class ProcessRunner:
         
         return sum / len(self.processes)
 
-    def throughput(self):
-        sum = 0
+    def max_ct(self):
+        max = -sys.maxsize - 1
+
         for process in self.processes:
-            sum = sum + process.response_time
+            if process.completion_time > max: 
+                max = process.completion_time
         
-        return sum / len(self.processes) / len(self.gant_chart)
+        return max
+    
+    def min_at(self):
+        min = sys.maxsize
+
+        for process in self.processes:
+            if process.arival_time < min:
+                min = process.arival_time
+
+        return min
+
+    def throughput(self):
+        return len(self.processes) / (self.max_ct()) - (self.min_at())
