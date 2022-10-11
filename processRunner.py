@@ -48,15 +48,13 @@ class ProcessRunner:
 
              # check for ariving processes
             self.ariving_processes()
-
+            
+            self.execute_process()
+           
             # if process completed 
-            if self.executing_process == None:
+            if self.complete_process():
                 break 
 
-            # TODO: check for when the processor is actually idle, or give complete process a return value for it it comlpeted an active process
-
-            self.execute_process()
-            self.complete_process()
             print("Time Unit: {}".format(len(self.gant_chart)))
         
         # if executing process is not none, set to none and append process back to the ready queue
@@ -129,6 +127,8 @@ class ProcessRunner:
             self.executing_process.completed = True 
             self.executing_process.completion_time = len(self.gant_chart)
             self.executing_process = None
+            return True
+        return False 
 
     def get_tu(self):
         return len(self.gant_chart)

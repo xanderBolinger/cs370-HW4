@@ -36,7 +36,6 @@ def print_gant_chart(processRunner: ProcessRunner):
             process_start_time = i
         elif(i == len(processRunner.gant_chart) - 1):
             print("[{} - {}] Process {}".format(process_start_time, i+1, active_process))
-
         
 def print_averages(processRunner: ProcessRunner):
     print("Average Waiting Time: "+str(processRunner.average_wt()))
