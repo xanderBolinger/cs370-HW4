@@ -39,30 +39,32 @@ class ProcessRunner:
 
         # check for ariving processes
         self.ariving_processes()
-
+        
         # if there is no executing prcess, pull first process from ready queue 
         self.set_process()
 
-        # for each time quantum 
-        for _ in range(self.time_quantum):
-
-             # check for ariving processes
-            self.ariving_processes()
-            
-            self.execute_process()
-           
-            # if process completed 
-            if self.complete_process():
-                break 
-
-            print("Time Unit: {}".format(len(self.gant_chart)))
-        
-        # if executing process is not none, set to none and append process back to the ready queue
+        # if executing process is not none, 
+        # set to none and append process back to the ready queue
         if self.executing_process != None: 
             process = self.executing_process
-            self.ready_queue.append(process)
-            self.executing_process = None
+            process_completed = False 
+            # for each time quantum 
+            for _ in range(self.time_quantum):
+                self.execute_process()
+                # if process completed 
+                if self.complete_process():
+                    process_completed = True
+                    break
+                print("Time Unit: {}".format(len(self.gant_chart)))
+
+            if process_completed == False:
+                self.ready_queue.append(process)
+                self.executing_process = None 
+
             print("return to ready queue: {}".format(process.process_id))
+        else: 
+            # add idle 
+            self.execute_process()
 
         print("Ready Queue Size: {}".format(len(self.ready_queue)))
 
@@ -87,7 +89,7 @@ class ProcessRunner:
 
     def ariving_processes(self, append=False):
         for process in self.processes:
-            if (process.arival_time == self.get_tu() 
+            if (process.arival_time <= self.get_tu() 
                 and process.completed == False 
                 and process not in self.ready_queue 
                 and process != self.executing_process
