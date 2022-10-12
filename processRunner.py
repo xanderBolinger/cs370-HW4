@@ -7,11 +7,12 @@ import sys
 class ProcessorType(Enum):
     FCFS = 1
     RR = 2
+    PS = 3
 
 class ProcessRunner: 
     processes: List[Process] = []
     gant_chart = []
-    ready_queue = []
+    ready_queue: List[Process] = []
     executing_process: Process = None
     processor_type = ProcessorType.FCFS
     time_quantum = 0
@@ -30,6 +31,8 @@ class ProcessRunner:
                 self.fcfs()
             elif self.processor_type == ProcessorType.RR:
                 self.rr()
+            elif self.processor_type == ProcessorType.PS:
+                self.ps()
 
         for process in self.processes:
             process.turn_around_time = process.completion_time - process.arival_time
@@ -40,6 +43,8 @@ class ProcessRunner:
         # check for ariving processes
         self.ariving_processes()
         
+        self.save_ready_queue()
+
         # if there is no executing prcess, pull first process from ready queue 
         self.set_process()
 
@@ -87,6 +92,30 @@ class ProcessRunner:
 
         #print("Ready Queue Size: {}".format(len(self.readyQueue)))
 
+    def ps(self):
+
+        #print("Print TU: "+str(self.getTu())+", "+str(self.gantChart))
+
+        # check for ariving processes 
+        self.ariving_processes()
+
+        # if there is no executing process, pull first process from ready queue 
+        self.set_process_priority()
+
+        # If there is no active process this time unit, set process to idle 
+        if self.executing_process == None:
+            self.gant_chart.append("IDLE")
+            # print("Execute Process IDLE")
+            return 
+
+        # execute process 
+        while self.executing_process != None:
+            self.execute_process()
+            # if process finished set it to completed 
+            self.complete_process()
+        
+
+
     def ariving_processes(self, append=False):
         for process in self.processes:
             if (process.arival_time <= self.get_tu() 
@@ -99,7 +128,34 @@ class ProcessRunner:
                     self.ready_queue.insert(0, process)
                 else:
                     self.ready_queue.append(process)
+        
+        
                 # print("Ariving Process: {}".format(process.process_id))
+
+    def set_process_priority(self):
+        if(self.executing_process != None and self.executing_process.completed != True):
+            return 
+        
+        if len(self.ready_queue) > 1:
+            lowest_burst_time: Process = self.ready_queue[0]
+            for process in self.ready_queue:
+                if process.burst_time < lowest_burst_time.burst_time:
+                    lowest_burst_time = process
+
+            for process in self.ready_queue:
+                if process == lowest_burst_time:
+                    continue 
+                if process.burst_time == lowest_burst_time.burst_time:
+                    if process.priority < lowest_burst_time.priority:
+                        lowest_burst_time = process 
+                    elif process.priority == lowest_burst_time.priority and process.process_id < lowest_burst_time.process_id:
+                        lowest_burst_time = process
+
+            self.executing_process = lowest_burst_time
+            # print("Set Process: {}".format(self.executing_process.process_id))
+            self.ready_queue.remove(self.executing_process)
+        elif len(self.ready_queue) > 0:
+                self.set_process()
 
     def set_process(self):
         if (self.executing_process == None or self.executing_process.completed == True) and len(self.ready_queue) > 0: 
@@ -175,3 +231,12 @@ class ProcessRunner:
 
     def throughput(self):
         return len(self.processes) / (self.max_ct()) - (self.min_at())
+
+    def save_ready_queue(self):
+        
+        ready_queue = []
+        for process in self.ready_queue:
+            ready_queue.append(process.process_id)
+        
+        print("{}".format(ready_queue))
+        

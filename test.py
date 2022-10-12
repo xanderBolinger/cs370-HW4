@@ -131,6 +131,60 @@ class TestCases(unittest.TestCase):
 
         self.assertEqual(len(processor.gant_chart), 23)
 
+    def test_ps(self):
+        processes: list[Process] = getProcesses("processinfo.csv")
+        processor = ProcessRunner(processes, ProcessorType.PS)
+        
+        processor.run()
+
+        print("PROCESSOR PS GANT CHART: "+str(processor.gant_chart))
+
+        # pid 1
+        self.assertEqual(processor.processes[2].completion_time, 17)
+        self.assertEqual(processor.processes[2].turn_around_time, 8)
+        self.assertEqual(processor.processes[2].waiting_time, 0)
+
+        # pid 2
+        self.assertEqual(processor.processes[1].completion_time, 8)
+        self.assertEqual(processor.processes[1].turn_around_time, 8)
+        self.assertEqual(processor.processes[1].waiting_time, 3)
+
+        # pid 3
+        self.assertEqual(processor.processes[0].completion_time, 3)
+        self.assertEqual(processor.processes[0].turn_around_time, 3)
+        self.assertEqual(processor.processes[0].waiting_time, 0)
+        
+        # pid 4
+        self.assertEqual(processor.processes[3].completion_time, 23)
+        self.assertEqual(processor.processes[3].turn_around_time, 13)
+        self.assertEqual(processor.processes[3].waiting_time, 7)
+
+        self.assertEqual(len(processor.gant_chart), 23)
+
+    def test_fcfs_2(self):
+        processes: list[Process] = getProcesses("processinfotest.csv")
+        processor = ProcessRunner(processes, ProcessorType.FCFS)
+        
+        processor.run()
+        print("PROCESSOR FCFS 2 GANT CHART: "+str(processor.gant_chart))
+        # pid 1
+        self.assertEqual(processor.processes[0].completion_time, 10)
+        self.assertEqual(processor.processes[0].turn_around_time, 10)
+        self.assertEqual(processor.processes[0].waiting_time, 0)
+
+        # pid 2
+        self.assertEqual(processor.processes[1].completion_time, 15)
+        self.assertEqual(processor.processes[1].turn_around_time, 15)
+        self.assertEqual(processor.processes[1].waiting_time, 10)
+
+        # pid 3
+        self.assertEqual(processor.processes[2].completion_time, 23)
+        self.assertEqual(processor.processes[2].turn_around_time, 23)
+        self.assertEqual(processor.processes[2].waiting_time, 15)
+
+        self.assertEqual(processor.average_wt(),8+(1.0/3.0))
+        self.assertEqual(processor.average_ttt(),16)
+
 if __name__ == '__main__':
     unittest.main()
     

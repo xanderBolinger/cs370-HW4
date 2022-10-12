@@ -36,7 +36,12 @@ def print_gant_chart(processRunner: ProcessRunner):
             process_start_time = i
         elif(i == len(processRunner.gant_chart) - 1):
             print("[{} - {}] Process {}".format(process_start_time, i+1, active_process))
-        
+
+def print_ready_queue(processRunner: ProcessRunner):
+    print("RR Ready Queue:")
+    for queue in processRunner.ready_queue_saved:
+        print(str(queue))
+
 def print_averages(processRunner: ProcessRunner):
     print("Average Waiting Time: "+str(processRunner.average_wt()))
     print("Average Turnaround Time: "+str(processRunner.average_ttt()))
@@ -77,10 +82,29 @@ if __name__ == "__main__":
     print_averages(processRunner)
     print()
     
+    # Call PS
+    processRunner = ProcessRunner(processes=getProcesses(sys.argv[1])
+        , type=ProcessorType.PS)
+    
+    processRunner.run()
+
+    print_processes(processRunner.processes, "PS")
+    print()
+
+    print_gant_chart(processRunner)
+
+    print()
+    print_averages(processRunner)
+    print()
+
     # Call RR
     processRunner = ProcessRunner(processes=getProcesses(sys.argv[1])
         , type=ProcessorType.RR, time_quantum=int(sys.argv[2]))
+    
+    print("RR Ready Queue:")
     processRunner.run()
+    print()
+    
 
     print_processes(processRunner.processes, "Round Robin")
     print()
@@ -91,8 +115,10 @@ if __name__ == "__main__":
     print_averages(processRunner)
     print()
 
+    
+
     # Test print TODO: comment out before submitting
-    print("pass finished main".upper())
+    # print("pass finished main".upper())
 
     
 
