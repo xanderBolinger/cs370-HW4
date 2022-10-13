@@ -37,7 +37,6 @@ class TestCases(unittest.TestCase):
         self.assertEqual(processes[3].arival_time, 10)
         self.assertEqual(processes[3].burst_time, 6)
         self.assertEqual(processes[3].priority, 3)
-
         
         print("FINISHED TEST GET PROCESSES: ")
 
@@ -80,26 +79,25 @@ class TestCases(unittest.TestCase):
         
         processor.run()
 
-        print("PROCESSOR GANT CHART: "+str(processor.gant_chart))
+        print("PROCESSOR FCFS GANT CHART: "+str(processor.gant_chart))
 
-        self.assertEqual(processor.processes[0].completion_time, 8)
-        self.assertEqual(processor.processes[0].turn_around_time, 8)
-        self.assertEqual(processor.processes[0].waiting_time, 5)
+        self.assertEqual(processor.get_process(1).completion_time, 17)
+        self.assertEqual(processor.get_process(1).turn_around_time, 8)
+        self.assertEqual(processor.get_process(1).waiting_time, 0)
 
-        self.assertEqual(processor.processes[1].completion_time, 5)
-        self.assertEqual(processor.processes[1].turn_around_time, 5)
-        self.assertEqual(processor.processes[1].waiting_time, 0)
-        
-        self.assertEqual(processor.processes[2].completion_time, 17)
-        self.assertEqual(processor.processes[2].turn_around_time, 8)
-        self.assertEqual(processor.processes[2].waiting_time, 0)
+        self.assertEqual(processor.get_process(2).completion_time, 5)
+        self.assertEqual(processor.get_process(2).turn_around_time, 5)
+        self.assertEqual(processor.get_process(2).waiting_time, 0)
 
-        self.assertEqual(processor.processes[3].completion_time, 23)
-        self.assertEqual(processor.processes[3].turn_around_time, 13)
-        self.assertEqual(processor.processes[3].waiting_time, 7)
+        self.assertEqual(processor.get_process(3).completion_time, 8)
+        self.assertEqual(processor.get_process(3).turn_around_time, 8)
+        self.assertEqual(processor.get_process(3).waiting_time, 5)
+
+        self.assertEqual(processor.get_process(4).completion_time, 23)
+        self.assertEqual(processor.get_process(4).turn_around_time, 13)
+        self.assertEqual(processor.get_process(4).waiting_time, 7)
 
         self.assertEqual(len(processor.gant_chart), 23)
-
 
     def test_rr(self):
         processes: list[Process] = getProcesses("processinfo.csv")
@@ -110,24 +108,24 @@ class TestCases(unittest.TestCase):
         print("PROCESSOR RR GANT CHART: "+str(processor.gant_chart))
 
         # pid 3
-        self.assertEqual(processor.processes[0].completion_time, 7)
-        self.assertEqual(processor.processes[0].turn_around_time, 7)
-        self.assertEqual(processor.processes[0].waiting_time, 4)
+        self.assertEqual(processor.get_process(3).completion_time, 7)
+        self.assertEqual(processor.get_process(3).turn_around_time, 7)
+        self.assertEqual(processor.get_process(3).waiting_time, 4)
 
         # pid 2
-        self.assertEqual(processor.processes[1].completion_time, 8)
-        self.assertEqual(processor.processes[1].turn_around_time, 8)
-        self.assertEqual(processor.processes[1].waiting_time, 3)
+        self.assertEqual(processor.get_process(2).completion_time, 8)
+        self.assertEqual(processor.get_process(2).turn_around_time, 8)
+        self.assertEqual(processor.get_process(2).waiting_time, 3)
         
         # pid 1
-        self.assertEqual(processor.processes[2].completion_time, 23)
-        self.assertEqual(processor.processes[2].turn_around_time, 14)
-        self.assertEqual(processor.processes[2].waiting_time, 6)
+        self.assertEqual(processor.get_process(1).completion_time, 23)
+        self.assertEqual(processor.get_process(1).turn_around_time, 14)
+        self.assertEqual(processor.get_process(1).waiting_time, 6)
 
         # pid 4
-        self.assertEqual(processor.processes[3].completion_time, 21)
-        self.assertEqual(processor.processes[3].turn_around_time, 11)
-        self.assertEqual(processor.processes[3].waiting_time, 5)
+        self.assertEqual(processor.get_process(4).completion_time, 21)
+        self.assertEqual(processor.get_process(4).turn_around_time, 11)
+        self.assertEqual(processor.get_process(4).waiting_time, 5)
 
         self.assertEqual(len(processor.gant_chart), 23)
 
@@ -140,24 +138,24 @@ class TestCases(unittest.TestCase):
         print("PROCESSOR PS GANT CHART: "+str(processor.gant_chart))
 
         # pid 1
-        self.assertEqual(processor.processes[2].completion_time, 17)
-        self.assertEqual(processor.processes[2].turn_around_time, 8)
-        self.assertEqual(processor.processes[2].waiting_time, 0)
+        self.assertEqual(processor.get_process(1).completion_time, 17)
+        self.assertEqual(processor.get_process(1).turn_around_time, 8)
+        self.assertEqual(processor.get_process(1).waiting_time, 0)
 
         # pid 2
-        self.assertEqual(processor.processes[1].completion_time, 8)
-        self.assertEqual(processor.processes[1].turn_around_time, 8)
-        self.assertEqual(processor.processes[1].waiting_time, 3)
+        self.assertEqual(processor.get_process(2).completion_time, 8)
+        self.assertEqual(processor.get_process(2).turn_around_time, 8)
+        self.assertEqual(processor.get_process(2).waiting_time, 3)
 
         # pid 3
-        self.assertEqual(processor.processes[0].completion_time, 3)
-        self.assertEqual(processor.processes[0].turn_around_time, 3)
-        self.assertEqual(processor.processes[0].waiting_time, 0)
+        self.assertEqual(processor.get_process(3).completion_time, 3)
+        self.assertEqual(processor.get_process(3).turn_around_time, 3)
+        self.assertEqual(processor.get_process(3).waiting_time, 0)
         
         # pid 4
-        self.assertEqual(processor.processes[3].completion_time, 23)
-        self.assertEqual(processor.processes[3].turn_around_time, 13)
-        self.assertEqual(processor.processes[3].waiting_time, 7)
+        self.assertEqual(processor.get_process(4).completion_time, 23)
+        self.assertEqual(processor.get_process(4).turn_around_time, 13)
+        self.assertEqual(processor.get_process(4).waiting_time, 7)
 
         self.assertEqual(len(processor.gant_chart), 23)
 
@@ -167,23 +165,25 @@ class TestCases(unittest.TestCase):
         
         processor.run()
         print("PROCESSOR FCFS 2 GANT CHART: "+str(processor.gant_chart))
+
         # pid 1
-        self.assertEqual(processor.processes[0].completion_time, 10)
-        self.assertEqual(processor.processes[0].turn_around_time, 10)
-        self.assertEqual(processor.processes[0].waiting_time, 0)
+        self.assertEqual(processor.get_process(1).completion_time, 10)
+        self.assertEqual(processor.get_process(1).turn_around_time, 10)
+        self.assertEqual(processor.get_process(1).waiting_time, 0)
 
         # pid 2
-        self.assertEqual(processor.processes[1].completion_time, 15)
-        self.assertEqual(processor.processes[1].turn_around_time, 15)
-        self.assertEqual(processor.processes[1].waiting_time, 10)
+        self.assertEqual(processor.get_process(2).completion_time, 15)
+        self.assertEqual(processor.get_process(2).turn_around_time, 15)
+        self.assertEqual(processor.get_process(2).waiting_time, 10)
 
         # pid 3
-        self.assertEqual(processor.processes[2].completion_time, 23)
-        self.assertEqual(processor.processes[2].turn_around_time, 23)
-        self.assertEqual(processor.processes[2].waiting_time, 15)
+        self.assertEqual(processor.get_process(3).completion_time, 23)
+        self.assertEqual(processor.get_process(3).turn_around_time, 23)
+        self.assertEqual(processor.get_process(3).waiting_time, 15)
 
         self.assertEqual(processor.average_wt(),8+(1.0/3.0))
         self.assertEqual(processor.average_ttt(),16)
+    
 
 if __name__ == '__main__':
     unittest.main()

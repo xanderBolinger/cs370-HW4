@@ -15,12 +15,16 @@ class ProcessRunner:
     ready_queue: List[Process] = []
     executing_process: Process = None
     processor_type = ProcessorType.FCFS
-    time_quantum = 0
+    time_quantum = 2
 
-    def __init__(self,processes, type, time_quantum=0):
+    def __init__(self,processes, type, time_quantum=2):
         self.processes = processes
         self.processor_type = type
         self.time_quantum = time_quantum
+
+
+        processes.sort(key=lambda x: x.process_id, reverse=True)
+
 
     def run(self):
 
@@ -240,3 +244,8 @@ class ProcessRunner:
         
         print("{}".format(ready_queue))
         
+    def get_process(self, process_number):
+        for process in self.processes:
+            if process.process_id == process_number:
+                return process
+        return None
